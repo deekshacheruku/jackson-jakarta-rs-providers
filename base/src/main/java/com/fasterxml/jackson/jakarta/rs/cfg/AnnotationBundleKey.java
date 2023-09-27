@@ -108,7 +108,7 @@ public final class AnnotationBundleKey
         if (o == null) return false;
         if (o.getClass() != getClass()) return false;
         AnnotationBundleKey other = (AnnotationBundleKey) o;
-        if ((other._hashCode != _hashCode) || (other._type != _type)) {
+        if (other._type != _type) {
             return false;
         }
         return _equals(other._annotations);
@@ -129,13 +129,22 @@ public final class AnnotationBundleKey
         
         switch (len) {
         default:
-            for (int i = 0; i < len; ++i) {
-                if (!_annotations[i].equals(otherAnn[i])) {
+            for (Annotation annotation1 : _annotations) {
+                boolean found = false;
+                for (Annotation annotation2 : otherAnn) {
+                    if (annotation1 == annotation2) {
+                        found = true;
+                        if (!annotation1.equals(annotation2)) {
+                            return false;
+                        }
+                    }
+                }
+                if (!found) {
                     return false;
                 }
             }
             return true;
-            
+
         case 3:
             if (!_annotations[2].equals(otherAnn[2])) {
                 return false;

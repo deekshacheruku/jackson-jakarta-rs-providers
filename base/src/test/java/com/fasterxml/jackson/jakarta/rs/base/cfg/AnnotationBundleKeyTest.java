@@ -83,10 +83,26 @@ public class AnnotationBundleKeyTest
 
     protected void _checkWith(Annotation[] anns1, Annotation[] anns2) {
         // First, sanity check2 to know we passed non-empty annotations, same by equality
-        if (anns1.length == 0) {
+        if (anns1.length == 0 || anns2.length == 0) {
             fail("Internal error: empty annotation array");
         }
-        assertArrayEquals("Internal error: should never differ", anns1, anns2);
+
+        if (anns1.length != anns2.length) {
+            fail("Annotations Array differ in length");
+        }
+
+        for (Annotation annotation1 : anns1) {
+            boolean found = false;
+            for (Annotation annotation2 : anns2) {
+                if (annotation1 == annotation2) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                fail("Annotation " + annotation1 + " not found.");
+            }
+        }
 
         AnnotationBundleKey b1 = new AnnotationBundleKey(anns1, Object.class);
         AnnotationBundleKey b2 = new AnnotationBundleKey(anns2, Object.class);
