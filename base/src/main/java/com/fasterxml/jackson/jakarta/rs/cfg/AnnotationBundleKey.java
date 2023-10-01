@@ -130,16 +130,14 @@ public final class AnnotationBundleKey
         switch (len) {
         default:
             for (Annotation annotation1 : _annotations) {
-                boolean found = false;
+                boolean notFound = true;
                 for (Annotation annotation2 : otherAnn) {
-                    if (annotation1 == annotation2) {
-                        found = true;
-                        if (!annotation1.equals(annotation2)) {
-                            return false;
-                        }
+                    if (annotation1.equals(annotation2)) {
+                        notFound = false;
+                        break;
                     }
                 }
-                if (!found) {
+                if (notFound) {
                     return false;
                 }
             }
