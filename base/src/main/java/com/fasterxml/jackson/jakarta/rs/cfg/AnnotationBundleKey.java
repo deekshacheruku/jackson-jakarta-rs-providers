@@ -26,7 +26,7 @@ public final class AnnotationBundleKey
     private final boolean _annotationsCopied;
 
     private final int _hashCode;
-
+    
     /*
     /**********************************************************
     /* Construction
@@ -83,7 +83,7 @@ public final class AnnotationBundleKey
         System.arraycopy(_annotations, 0, newAnnotations, 0, len);
         return new AnnotationBundleKey(newAnnotations, _type, _hashCode);
     }
-
+    
     /*
     /**********************************************************
     /* Overridden methods
