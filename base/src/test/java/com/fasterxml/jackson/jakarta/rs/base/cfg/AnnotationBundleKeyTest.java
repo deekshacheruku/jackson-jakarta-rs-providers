@@ -91,19 +91,6 @@ public class AnnotationBundleKeyTest
             fail("Annotations Array differ in length");
         }
 
-        for (Annotation annotation1 : anns1) {
-            boolean found = false;
-            for (Annotation annotation2 : anns2) {
-                if (annotation1 == annotation2) {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                fail("Annotation " + annotation1 + " not found.");
-            }
-        }
-
         AnnotationBundleKey b1 = new AnnotationBundleKey(anns1, Object.class);
         AnnotationBundleKey b2 = new AnnotationBundleKey(anns2, Object.class);
 

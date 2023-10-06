@@ -1,5 +1,6 @@
 package com.fasterxml.jackson.jakarta.rs.cfg;
 
+import java.util.HashMap;
 import java.lang.annotation.Annotation;
 
 /**
@@ -25,7 +26,7 @@ public final class AnnotationBundleKey
     private final boolean _annotationsCopied;
 
     private final int _hashCode;
-    
+
     /*
     /**********************************************************
     /* Construction
@@ -82,7 +83,7 @@ public final class AnnotationBundleKey
         System.arraycopy(_annotations, 0, newAnnotations, 0, len);
         return new AnnotationBundleKey(newAnnotations, _type, _hashCode);
     }
-    
+
     /*
     /**********************************************************
     /* Overridden methods
@@ -126,40 +127,22 @@ public final class AnnotationBundleKey
         //   possible permutations but rather trying to ensure that caching of same
         //   method signature is likely to match. So false negatives are acceptable
         //   over having to do order-insensitive comparison.
-        
-        switch (len) {
-        default:
-            for (Annotation annotation1 : _annotations) {
-                boolean notFound = true;
-                for (Annotation annotation2 : otherAnn) {
-                    if (annotation1.equals(annotation2)) {
-                        notFound = false;
-                        break;
-                    }
-                }
-                if (notFound) {
-                    return false;
-                }
-            }
-            return true;
 
-        case 3:
-            if (!_annotations[2].equals(otherAnn[2])) {
-                return false;
-            }
-            // fall through
-        case 2:
-            if (!_annotations[1].equals(otherAnn[1])) {
-                return false;
-            }
-            // fall through
-        case 1:
-            if (!_annotations[0].equals(otherAnn[0])) {
-                return false;
-            }
-            // fall through
-        case 0:
+        HashMap<Annotation, Integer> frequencyMap = new HashMap<>();
+
+        for (Annotation ann: _annotations) {
+            frequencyMap.put(ann, frequencyMap.getOrDefault(ann, 0) + 1);
         }
-        return true;
+
+        for (Annotation ann: otherAnn) {
+            if (!frequencyMap.containsKey(ann)) {
+                return false;
+            }
+            frequencyMap.put(ann, frequencyMap.get(ann) - 1);
+            if (frequencyMap.get(ann) == 0) {
+                frequencyMap.remove(ann);
+            }
+        }
+        return frequencyMap.isEmpty();
     }
 }
