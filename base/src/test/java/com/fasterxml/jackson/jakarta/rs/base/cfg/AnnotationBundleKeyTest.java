@@ -1,6 +1,8 @@
 package com.fasterxml.jackson.jakarta.rs.base.cfg;
 
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
+import java.util.Comparator;
 
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -42,18 +44,23 @@ public class AnnotationBundleKeyTest
 
     public void testWithClassAnnotations() throws Exception
     {
-        _checkWith(Helper.class.getAnnotations(), Helper.class.getAnnotations());
+        Annotation[] annotations = Helper.class.getAnnotations();
+        Arrays.sort(annotations, Comparator.comparing(Annotation::toString));
+        _checkWith(annotations, annotations);
     }
 
     public void testWithMethodAnnotationEquals() throws Exception
     {
+        Annotation[] getXAnnotations = Helper.class.getDeclaredMethod("getX").getAnnotations();
+        Annotation[] altXAnnotations = Helper.class.getDeclaredMethod("altX").getAnnotations();
+        Arrays.sort(getXAnnotations, Comparator.comparing(Annotation::toString));
+        Arrays.sort(altXAnnotations, Comparator.comparing(Annotation::toString));
+
         // First, same method parameters definitely should match
-        _checkWith(Helper.class.getDeclaredMethod("getX").getAnnotations(),
-                Helper.class.getDeclaredMethod("getX").getAnnotations());
+        _checkWith(getXAnnotations, getXAnnotations);
         // but so should annotations from different method as long as
         // same parameters are in same order
-        _checkWith(Helper.class.getDeclaredMethod("getX").getAnnotations(),
-                Helper.class.getDeclaredMethod("altX").getAnnotations());
+        _checkWith(getXAnnotations, altXAnnotations);
     }
 
     public void testWithMethodAnnotationDifferent() throws Exception
